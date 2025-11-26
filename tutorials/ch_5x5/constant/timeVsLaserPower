@@ -1,0 +1,94 @@
+(
+  (0             10)        // start baseline
+  (1e-8          285)       // initial laser on
+
+  // Track 1
+  (5042e-6       285)       // track 1 ends
+  (5042.001e-6   0)         // laser off (turnaround starts)
+  (5792e-6       0)         // turnaround ends
+
+  // Track 2
+  (5792.001e-6   285)       // track 2 starts
+  (10834e-6       285)       // track 2 ends
+  (10834.001e-6   0)         // laser off (turnaround starts)
+  (11584e-6       0)         // turnaround ends
+
+  // Track 3
+  (11584.001e-6   285)       // track 3 starts
+  (16626e-6       285)       // track 3 ends
+  (16626.001e-6   0)         // laser off (turnaround starts)
+  (17376e-6       0)         // turnaround ends
+
+  // Track 4
+  (17376.001e-6   285)       // track 4 starts
+  (22418e-6       285)       // track 4 ends
+  (22418.001e-6   0)         // laser off (turnaround starts)
+  (23168e-6       0)         // turnaround ends
+
+  // Track 5
+  (23168.001e-6   285)       // track 5 starts
+  (28210e-6       285)       // track 5 ends
+  (28210.001e-6   0)         // laser off (turnaround starts)
+  (28960e-6       0)         // turnaround ends
+
+  // Track 6
+  (28960.001e-6   285)       // track 6 starts
+  (34002e-6       285)       // track 6 ends
+  (34002.001e-6   0)         // laser off (turnaround starts)
+  (34752e-6       0)         // turnaround ends
+
+  // Track 7
+  (34752.001e-6   285)       // track 7 starts
+  (39794e-6       285)       // track 7 ends
+  (39794.001e-6   0)         // laser off (turnaround starts)
+  (40544e-6       0)         // turnaround ends
+
+  // Track 8
+  (40544.001e-6   285)       // track 8 starts
+  (45586e-6       285)       // track 8 ends
+  (45586.001e-6   0)         // laser off (turnaround starts)
+  (46336e-6       0)         // turnaround ends
+
+  // Track 9
+  (46336.001e-6   285)       // track 9 starts
+  (51378e-6       285)       // track 9 ends
+  (51378.001e-6   0)         // laser off (turnaround starts)
+  (52128e-6       0)         // turnaround ends
+
+  // Track 10
+  (52128.001e-6   285)       // track 10 starts
+  (57170e-6       285)       // track 10 ends
+  (57170.001e-6   0)         // laser off (turnaround starts)
+  (57920e-6       0)         // turnaround ends
+
+  // Track 11
+  (57920.001e-6   285)       // track 11 starts
+  (62962e-6       285)       // track 11 ends
+  (62962.001e-6   0)         // laser off (turnaround starts)
+  (63712e-6       0)         // turnaround ends
+
+  // Track 12
+  (63712.001e-6   285)       // track 12 starts
+  (68754e-6       285)       // track 12 ends
+  (68754.001e-6   0)         // laser off (turnaround starts)
+  (69504e-6       0)         // turnaround ends
+
+  // Track 13
+  (69504.001e-6   285)       // track 13 starts
+  (74546e-6       285)       // track 13 ends
+  (74546.001e-6   0)         // laser off (turnaround starts)
+  (75296e-6       0)         // turnaround ends
+
+  // Track 14
+  (75296.001e-6   285)       // track 14 starts
+  (80338e-6       285)       // track 14 ends
+  (80338.001e-6   0)         // laser off (turnaround starts)
+  (81088e-6       0)         // turnaround ends
+
+  // Track 15
+  (81088.001e-6   285)       // track 15 starts
+  (86130e-6       285)       // track 15 ends
+  (86130.001e-6   0)         // laser off (turnaround starts)
+  (86880e-6       0)         // turnaround ends (final)
+
+)
