@@ -1,0 +1,182 @@
+Starting temperature analysis...
+Job ID: 2707697
+Date: Wed Aug 13 04:09:36 PM EDT 2025
+Submit directory: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp
+✅ Loaded python/3.12
+ℹ️ scipy-stack not available
+ℹ️ VTK module not available
+Working directory: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp
+Python path: /apps/python/3.12/bin/python
+Python version: Python 3.12.4
+Testing Python packages...
+Python executable: /apps/python/3.12/bin/python
+🚀 Starting temperature analysis...
+✅ All imports successful!
+[2025-08-13 16:09:40] 🚀 Enhanced Temperature Analysis with Melt Line Analysis Starting...
+[2025-08-13 16:09:40] 🔥 Melt temperature set to: 1571.15K
+[2025-08-13 16:09:40] 🔍 Searching for VTK files in: /users/PNS0496/badhon19/nist_am/IN718_singletrack/testing/vtk
+[2025-08-13 16:09:40] ✅ Found 135 VTK files
+[2025-08-13 16:09:40] 🌡️ Extracting temperature data at point (0.2, -0.3, 0.5) mm...
+[2025-08-13 16:09:40] Processing: IN718_singletrack_0.vtk
+[2025-08-13 16:09:41] Processing: IN718_singletrack_500.vtk
+[2025-08-13 16:09:42] Processing: IN718_singletrack_1000.vtk
+[2025-08-13 16:09:44] Processing: IN718_singletrack_1500.vtk
+[2025-08-13 16:09:46] Processing: IN718_singletrack_2000.vtk
+[2025-08-13 16:09:47] Processing: IN718_singletrack_2500.vtk
+[2025-08-13 16:09:49] Processing: IN718_singletrack_3000.vtk
+[2025-08-13 16:09:51] Processing: IN718_singletrack_3500.vtk
+[2025-08-13 16:09:52] Processing: IN718_singletrack_4000.vtk
+[2025-08-13 16:09:54] Processing: IN718_singletrack_4500.vtk
+[2025-08-13 16:09:55] Processing: IN718_singletrack_5000.vtk
+[2025-08-13 16:09:57] Processing: IN718_singletrack_5500.vtk
+[2025-08-13 16:09:58] Processing: IN718_singletrack_6000.vtk
+[2025-08-13 16:10:00] Processing: IN718_singletrack_6500.vtk
+[2025-08-13 16:10:02] Processing: IN718_singletrack_7000.vtk
+[2025-08-13 16:10:04] Processing: IN718_singletrack_7500.vtk
+[2025-08-13 16:10:05] Processing: IN718_singletrack_8000.vtk
+[2025-08-13 16:10:07] Processing: IN718_singletrack_8500.vtk
+[2025-08-13 16:10:08] Processing: IN718_singletrack_9000.vtk
+[2025-08-13 16:10:10] Processing: IN718_singletrack_9500.vtk
+[2025-08-13 16:10:12] Processing: IN718_singletrack_10000.vtk
+[2025-08-13 16:10:15] Processing: IN718_singletrack_10500.vtk
+[2025-08-13 16:10:17] Processing: IN718_singletrack_11000.vtk
+[2025-08-13 16:10:19] Processing: IN718_singletrack_11500.vtk
+[2025-08-13 16:10:21] Processing: IN718_singletrack_12000.vtk
+[2025-08-13 16:10:23] Processing: IN718_singletrack_12500.vtk
+[2025-08-13 16:10:25] Processing: IN718_singletrack_13000.vtk
+[2025-08-13 16:10:28] Processing: IN718_singletrack_13500.vtk
+[2025-08-13 16:10:30] Processing: IN718_singletrack_14000.vtk
+[2025-08-13 16:10:32] Processing: IN718_singletrack_14500.vtk
+[2025-08-13 16:10:34] Processing: IN718_singletrack_15000.vtk
+[2025-08-13 16:10:35] Processing: IN718_singletrack_15500.vtk
+[2025-08-13 16:10:37] Processing: IN718_singletrack_16000.vtk
+[2025-08-13 16:10:38] Processing: IN718_singletrack_16500.vtk
+[2025-08-13 16:10:39] Processing: IN718_singletrack_17000.vtk
+[2025-08-13 16:10:40] Processing: IN718_singletrack_17500.vtk
+[2025-08-13 16:10:42] Processing: IN718_singletrack_18000.vtk
+[2025-08-13 16:10:43] Processing: IN718_singletrack_18500.vtk
+[2025-08-13 16:10:44] Processing: IN718_singletrack_19000.vtk
+[2025-08-13 16:10:45] Processing: IN718_singletrack_19500.vtk
+[2025-08-13 16:10:47] Processing: IN718_singletrack_20000.vtk
+[2025-08-13 16:10:49] Processing: IN718_singletrack_20500.vtk
+[2025-08-13 16:10:50] Processing: IN718_singletrack_21000.vtk
+[2025-08-13 16:10:52] Processing: IN718_singletrack_21500.vtk
+[2025-08-13 16:10:53] Processing: IN718_singletrack_22000.vtk
+[2025-08-13 16:10:55] Processing: IN718_singletrack_22500.vtk
+[2025-08-13 16:10:56] Processing: IN718_singletrack_23000.vtk
+[2025-08-13 16:10:58] Processing: IN718_singletrack_23500.vtk
+[2025-08-13 16:10:59] Processing: IN718_singletrack_24000.vtk
+[2025-08-13 16:11:00] Processing: IN718_singletrack_24500.vtk
+[2025-08-13 16:11:02] Processing: IN718_singletrack_25000.vtk
+[2025-08-13 16:11:03] Processing: IN718_singletrack_25500.vtk
+[2025-08-13 16:11:05] Processing: IN718_singletrack_26000.vtk
+[2025-08-13 16:11:06] Processing: IN718_singletrack_26500.vtk
+[2025-08-13 16:11:07] Processing: IN718_singletrack_27000.vtk
+[2025-08-13 16:11:09] Processing: IN718_singletrack_27500.vtk
+[2025-08-13 16:11:10] Processing: IN718_singletrack_28000.vtk
+[2025-08-13 16:11:12] Processing: IN718_singletrack_28500.vtk
+[2025-08-13 16:11:14] Processing: IN718_singletrack_29000.vtk
+[2025-08-13 16:11:15] Processing: IN718_singletrack_29500.vtk
+[2025-08-13 16:11:16] Processing: IN718_singletrack_30000.vtk
+[2025-08-13 16:11:18] Processing: IN718_singletrack_30500.vtk
+[2025-08-13 16:11:19] Processing: IN718_singletrack_31000.vtk
+[2025-08-13 16:11:20] Processing: IN718_singletrack_31500.vtk
+[2025-08-13 16:11:22] Processing: IN718_singletrack_32000.vtk
+[2025-08-13 16:11:23] Processing: IN718_singletrack_32500.vtk
+[2025-08-13 16:11:25] Processing: IN718_singletrack_33000.vtk
+[2025-08-13 16:11:26] Processing: IN718_singletrack_33500.vtk
+[2025-08-13 16:11:28] Processing: IN718_singletrack_34000.vtk
+[2025-08-13 16:11:29] Processing: IN718_singletrack_34500.vtk
+[2025-08-13 16:11:31] Processing: IN718_singletrack_35000.vtk
+[2025-08-13 16:11:32] Processing: IN718_singletrack_35500.vtk
+[2025-08-13 16:11:34] Processing: IN718_singletrack_36000.vtk
+[2025-08-13 16:11:36] Processing: IN718_singletrack_36500.vtk
+[2025-08-13 16:11:37] Processing: IN718_singletrack_37000.vtk
+[2025-08-13 16:11:39] Processing: IN718_singletrack_37500.vtk
+[2025-08-13 16:11:41] Processing: IN718_singletrack_38000.vtk
+[2025-08-13 16:11:42] Processing: IN718_singletrack_38500.vtk
+[2025-08-13 16:11:44] Processing: IN718_singletrack_39000.vtk
+[2025-08-13 16:11:45] Processing: IN718_singletrack_39500.vtk
+[2025-08-13 16:11:46] Processing: IN718_singletrack_40000.vtk
+[2025-08-13 16:11:48] Processing: IN718_singletrack_40500.vtk
+[2025-08-13 16:11:49] Processing: IN718_singletrack_41000.vtk
+[2025-08-13 16:11:52] Processing: IN718_singletrack_41500.vtk
+[2025-08-13 16:11:53] Processing: IN718_singletrack_42000.vtk
+[2025-08-13 16:11:55] Processing: IN718_singletrack_42500.vtk
+[2025-08-13 16:11:57] Processing: IN718_singletrack_43000.vtk
+[2025-08-13 16:11:58] Processing: IN718_singletrack_43500.vtk
+[2025-08-13 16:12:01] Processing: IN718_singletrack_44000.vtk
+[2025-08-13 16:12:02] Processing: IN718_singletrack_44500.vtk
+[2025-08-13 16:12:04] Processing: IN718_singletrack_45000.vtk
+[2025-08-13 16:12:06] Processing: IN718_singletrack_45500.vtk
+[2025-08-13 16:12:08] Processing: IN718_singletrack_46000.vtk
+[2025-08-13 16:12:10] Processing: IN718_singletrack_46500.vtk
+[2025-08-13 16:12:11] Processing: IN718_singletrack_47000.vtk
+[2025-08-13 16:12:13] Processing: IN718_singletrack_47500.vtk
+[2025-08-13 16:12:14] Processing: IN718_singletrack_48000.vtk
+[2025-08-13 16:12:17] Processing: IN718_singletrack_48500.vtk
+[2025-08-13 16:12:19] Processing: IN718_singletrack_49000.vtk
+[2025-08-13 16:12:20] Processing: IN718_singletrack_49500.vtk
+[2025-08-13 16:12:21] Processing: IN718_singletrack_50000.vtk
+[2025-08-13 16:12:23] Processing: IN718_singletrack_50500.vtk
+[2025-08-13 16:12:25] Processing: IN718_singletrack_51000.vtk
+[2025-08-13 16:12:26] Processing: IN718_singletrack_51500.vtk
+[2025-08-13 16:12:29] Processing: IN718_singletrack_52000.vtk
+[2025-08-13 16:12:30] Processing: IN718_singletrack_52500.vtk
+[2025-08-13 16:12:32] Processing: IN718_singletrack_53000.vtk
+[2025-08-13 16:12:34] Processing: IN718_singletrack_53500.vtk
+[2025-08-13 16:12:35] Processing: IN718_singletrack_54000.vtk
+[2025-08-13 16:12:37] Processing: IN718_singletrack_54500.vtk
+[2025-08-13 16:12:38] Processing: IN718_singletrack_55000.vtk
+[2025-08-13 16:12:40] Processing: IN718_singletrack_55500.vtk
+[2025-08-13 16:12:41] Processing: IN718_singletrack_56000.vtk
+[2025-08-13 16:12:42] Processing: IN718_singletrack_56500.vtk
+[2025-08-13 16:12:44] Processing: IN718_singletrack_57000.vtk
+[2025-08-13 16:12:45] Processing: IN718_singletrack_57500.vtk
+[2025-08-13 16:12:46] Processing: IN718_singletrack_58000.vtk
+[2025-08-13 16:12:48] Processing: IN718_singletrack_58500.vtk
+[2025-08-13 16:12:49] Processing: IN718_singletrack_59000.vtk
+[2025-08-13 16:12:51] Processing: IN718_singletrack_59500.vtk
+[2025-08-13 16:12:52] Processing: IN718_singletrack_60000.vtk
+[2025-08-13 16:12:54] Processing: IN718_singletrack_60500.vtk
+[2025-08-13 16:12:55] Processing: IN718_singletrack_61000.vtk
+[2025-08-13 16:12:56] Processing: IN718_singletrack_61500.vtk
+[2025-08-13 16:12:58] Processing: IN718_singletrack_62000.vtk
+[2025-08-13 16:12:59] Processing: IN718_singletrack_62500.vtk
+[2025-08-13 16:13:01] Processing: IN718_singletrack_63000.vtk
+[2025-08-13 16:13:03] Processing: IN718_singletrack_63500.vtk
+[2025-08-13 16:13:06] Processing: IN718_singletrack_64000.vtk
+[2025-08-13 16:13:08] Processing: IN718_singletrack_64500.vtk
+[2025-08-13 16:13:09] Processing: IN718_singletrack_65000.vtk
+[2025-08-13 16:13:11] Processing: IN718_singletrack_65500.vtk
+[2025-08-13 16:13:12] Processing: IN718_singletrack_66000.vtk
+[2025-08-13 16:13:14] Processing: IN718_singletrack_66500.vtk
+[2025-08-13 16:13:15] Processing: IN718_singletrack_67000.vtk
+[2025-08-13 16:13:16] 🔍 Analyzing crossings with melt line at 1571.15K...
+[2025-08-13 16:13:16] ✅ Found 4 crossings with melt line
+[2025-08-13 16:13:16] 🔥 Spike 1: 0.2235 ms above melt (from 0.5471 to 0.7706)
+[2025-08-13 16:13:16] 🔥 Spike 2: 0.2257 ms above melt (from 4.1710 to 4.3967)
+[2025-08-13 16:13:17] 📊 Enhanced plot saved: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/20250813_161316_melt_analysis_x0.2_y-0.3_z0.5.png
+[2025-08-13 16:13:17] 
+🔥 MELT LINE ANALYSIS RESULTS:
+[2025-08-13 16:13:17] 🌡️  Melt temperature: 1571.15K
+[2025-08-13 16:13:17] 📊 Total crossings with melt line: 4
+[2025-08-13 16:13:17] 🚀 Number of temperature spikes: 2
+[2025-08-13 16:13:17] 
+⏱️  Time above melt for each spike:
+[2025-08-13 16:13:17]    Spike 1: 0.2235 ms (0.5471 - 0.7706)
+[2025-08-13 16:13:17]    Spike 2: 0.2257 ms (4.1710 - 4.3967)
+[2025-08-13 16:13:17] 
+🏆 HIGHEST TIME ABOVE MELT: 0.2257 ms
+[2025-08-13 16:13:17] 📈 Total cumulative time above melt: 0.4492 ms
+[2025-08-13 16:13:17] 🥇 Peak spike: #2 with 0.2257 ms above melt
+[2025-08-13 16:13:17] ✅ Melt analysis CSV saved: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/melt_analysis_x0.2_y-0.3_z0.5.csv
+[2025-08-13 16:13:17] ✅ Enhanced CSV data saved: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/enhanced_temp_analysis_x0.2_y-0.3_z0.5.csv
+[2025-08-13 16:13:17] 🎉 Enhanced temperature analysis with melt line completed successfully!
+✅ Temperature analysis completed successfully!
+📁 Results location: /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp
+📊 Generated files:
+-rw-r--r-- 1 badhon19 PNS0496 407566 Aug 13 16:13 /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/20250813_161316_melt_analysis_x0.2_y-0.3_z0.5.png
+-rw-r--r-- 1 badhon19 PNS0496 4411 Aug 13 16:13 /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/enhanced_temp_analysis_x0.2_y-0.3_z0.5.csv
+-rw-r--r-- 1 badhon19 PNS0496  168 Aug 13 16:13 /users/PNS0496/badhon19/nist_am/IN718_singletrack/TimeTemp/melt_analysis_x0.2_y-0.3_z0.5.csv
+Job completed at: Wed Aug 13 04:13:18 PM EDT 2025

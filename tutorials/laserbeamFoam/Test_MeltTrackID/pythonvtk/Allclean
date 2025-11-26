@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Allclean script to remove output files and result directories
+# Usage: ./Allclean
+
+echo "🧹 Starting cleanup process..."
+
+# Remove .out and .err files
+echo "🗑️  Removing .out and .err files..."
+rm -f *.out *.err
+if [ $? -eq 0 ]; then
+    echo "✅ Removed .out and .err files"
+else
+    echo "⚠️  No .out or .err files found"
+fi
+
+# Remove melt_pool_results directory
+if [ -d "melt_pool_results" ]; then
+    echo "🗑️  Removing melt_pool_results directory..."
+    rm -rf melt_pool_results
+    echo "✅ Removed melt_pool_results directory"
+else
+    echo "⚠️  melt_pool_results directory not found"
+fi
+
+# Remove melt_pool_results_automated directory
+if [ -d "melt_pool_results_automated" ]; then
+    echo "🗑️  Removing melt_pool_results_automated directory..."
+    rm -rf melt_pool_results_automated
+    echo "✅ Removed melt_pool_results_automated directory"
+else
+    echo "⚠️  melt_pool_results_automated directory not found"
+fi
+
+# Remove any plots directory if it exists (from the enhanced analysis)
+if [ -d "plots" ]; then
+    echo "🗑️  Removing plots directory..."
+    rm -rf plots
+    echo "✅ Removed plots directory"
+fi
+
+# Remove results.csv if it exists
+if [ -f "results.csv" ]; then
+    echo "🗑️  Removing results.csv..."
+    rm -f results.csv
+    echo "✅ Removed results.csv"
+fi
+
+echo "🎉 Cleanup completed!"
+echo ""
+echo "Current directory contents:"
+ls -la

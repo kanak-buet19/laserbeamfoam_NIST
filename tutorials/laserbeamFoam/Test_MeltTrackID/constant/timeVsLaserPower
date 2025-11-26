@@ -1,0 +1,16 @@
+(
+  (0             10)        // start baseline
+  (1e-8          300)       // initial laser on
+
+  // Track 1
+  (729e-6       300)       // track 1 ends
+  (729.001e-6   0)         // laser off (turnaround starts)
+  (829e-6       0)         // turnaround ends
+
+  // Track 2
+  (829.001e-6   300)       // track 2 starts
+  (1558e-6       300)       // track 2 ends
+  (1558.001e-6   0)         // laser off (turnaround starts)
+  (1658e-6       0)         // turnaround ends (final)
+
+)
