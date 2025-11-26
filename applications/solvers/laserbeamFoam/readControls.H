@@ -27,4 +27,3 @@ const dimensionedScalar epsilonRel
 
 const bool damperSwitch =
     meltingDict.lookupOrDefault<bool>("damperSwitch", false);
-

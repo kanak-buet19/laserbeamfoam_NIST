@@ -112,8 +112,3 @@
 
     gradT = fvc::grad(T);
 }
-
-
-
-
-

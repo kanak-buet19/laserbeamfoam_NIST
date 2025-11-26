@@ -286,13 +286,6 @@ const interpolationTable<scalar> cpTab_m
     "physicalProperties.metal:table_cp"
 );
 
-const dimensionedScalar kappaPowder
-(
-    "kappaPowder",
-    dimensionSet(1, 1, -3, -1, 0), // Dimensions for thermal conductivity
-    transportProperties_metal.lookup("kappaPowder")
-);
-
 // Gas still uses polynomials
 const Polynomial<8> polykappa_g(transportProperties_gas.lookup("poly_kappa"));
 const Polynomial<8> polycp_g(transportProperties_gas.lookup("poly_cp"));
@@ -321,42 +314,12 @@ volScalarField kappa
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedScalar("kappa",dimensionSet(1, 1, -3, -1, 0),0.0)
 );
 
-
-volScalarField meltHistory
-(
-    IOobject
-    (
-        "meltHistory",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("meltHistory", dimless, 0.0)
-);
-
-
-
-Info<< "Reading field isPowder\n" << endl;
-volScalarField isPowder
-(
-    IOobject
-    (
-        "isPowder",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
 #include "updateKappaCp.H"
 
 volScalarField TSolidus
@@ -718,7 +681,19 @@ volVectorField gradAlpha(fvc::grad(alpha1));
 volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
 
 // This variable is >=0 if the cell has been liquid (CUMULATIVE COUNTER)
-
+volScalarField meltHistory
+(
+    IOobject
+    (
+        "meltHistory",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("meltHistory", dimless, 0.0)
+);
 
 // MODIFICATION: Add the new meltTrackID field (LATEST TRACK ID)
 volScalarField meltTrackID
