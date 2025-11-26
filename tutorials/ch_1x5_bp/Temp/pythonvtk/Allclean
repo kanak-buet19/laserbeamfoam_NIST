@@ -1,0 +1,93 @@
+#!/bin/bash
+
+echo "Starting cleanup process..."
+
+# Initialize counters
+folders_removed=0
+melt_pool_out_files=0
+melt_pool_err_files=0
+automated_monitor_out_files=0
+automated_monitor_err_files=0
+total_files=0
+
+# Function to count and remove files matching a pattern
+count_and_remove() {
+    local pattern="$1"
+    local description="$2"
+    local count=0
+    
+    for file in $pattern; do
+        if [ -f "$file" ]; then
+            echo "Removing: $file"
+            rm -f "$file"
+            ((count++))
+        fi
+    done
+    
+    if [ $count -gt 0 ]; then
+        echo "Removed $count $description file(s)"
+    fi
+    
+    echo $count
+}
+
+# Remove the melt_pool_results folder if it exists
+if [ -d "melt_pool_results" ]; then
+    echo "Removing melt_pool_results folder..."
+    rm -rf melt_pool_results
+    echo "melt_pool_results folder removed."
+    folders_removed=1
+else
+    echo "melt_pool_results folder not found."
+fi
+
+# Remove the melt_pool_results_automated folder if it exists
+if [ -d "melt_pool_results_automated" ]; then
+    echo "Removing melt_pool_results_automated folder..."
+    rm -rf melt_pool_results_automated
+    echo "melt_pool_results_automated folder removed."
+    ((folders_removed++))
+else
+    echo "melt_pool_results_automated folder not found."
+fi
+
+echo ""
+echo "Cleaning up output and error files..."
+
+# Remove melt_pool_modules files
+echo "Removing melt_pool_modules output files..."
+melt_pool_out_files=$(count_and_remove "melt_pool_modules_*.out" "melt_pool_modules .out")
+
+echo "Removing melt_pool_modules error files..."
+melt_pool_err_files=$(count_and_remove "melt_pool_modules_*.err" "melt_pool_modules .err")
+
+# Remove automated_monitor files
+echo "Removing automated_monitor output files..."
+automated_monitor_out_files=$(count_and_remove "automated_monitor_*.out" "automated_monitor .out")
+
+echo "Removing automated_monitor error files..."
+automated_monitor_err_files=$(count_and_remove "automated_monitor_*.err" "automated_monitor .err")
+
+# Calculate totals
+total_files=$((melt_pool_out_files + melt_pool_err_files + automated_monitor_out_files + automated_monitor_err_files))
+
+echo ""
+echo "========================================="
+echo "           CLEANUP SUMMARY"
+echo "========================================="
+echo "Folders removed: $folders_removed"
+echo "  - melt_pool_results: $([ $folders_removed -ge 1 ] && echo "Yes" || echo "No")"
+echo "  - melt_pool_results_automated: $([ $folders_removed -ge 2 ] && echo "Yes" || echo "No")"
+echo ""
+echo "Files removed by type:"
+echo "  - melt_pool_modules .out files: $melt_pool_out_files"
+echo "  - melt_pool_modules .err files: $melt_pool_err_files"
+echo "  - automated_monitor .out files: $automated_monitor_out_files"
+echo "  - automated_monitor .err files: $automated_monitor_err_files"
+echo ""
+echo "Total files removed: $total_files"
+echo "Total items removed: $((folders_removed + total_files))"
+echo ""
+echo "Preserved .sh and .py files as requested."
+echo "========================================="
+echo "Cleanup completed successfully!"
