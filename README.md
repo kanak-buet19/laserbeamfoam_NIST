@@ -71,6 +71,43 @@ where the `-j` option uses all CPU cores available for building.
 
 The installation can be tested using the tutorial cases described below.
 
+### Quick start with Docker (recommended)
+
+If you do not already have OpenFOAM-10 on your machine, you do not have to
+build it. Run the setup script once:
+
+```bash
+git clone https://github.com/micmog/laserbeamFoam.git laserbeamFoam
+cd laserbeamFoam
+./setup.sh
+```
+
+It installs Docker if you do not have it, downloads the official OpenFOAM-10
+image, and puts a small launcher called `of10` on your PATH. If it added you
+to the `docker` group, log out and back in once before carrying on.
+
+From then on, `of10` runs anything you like inside OpenFOAM-10, in whichever
+directory you are standing in:
+
+```bash
+of10 ./Allwmake -j                       # build the solvers, once
+cd tutorials/ss316L_1track_bp && of10 ./Allrun   # run a case
+of10                                     # or just open an OpenFOAM-10 shell
+```
+
+Your home directory is shared with the container at the same path, and the
+container runs as you, so anything it writes belongs to you and stays put.
+Only directories under your home are visible inside, so keep the repository
+somewhere under `$HOME`.
+
+Two limitations to know about. On macOS, install Docker Desktop yourself
+first; the script then handles the rest. On Linux distributions other than
+the Debian, Ubuntu, Fedora, RHEL, SUSE and Arch families, install Docker by
+hand and rerun the script, which will skip that step.
+
+Use `./setup.sh --build` to compile the solvers as part of the setup, and
+`./setup.sh --help` for the full list of options.
+
 ### Optional: Installation of the LIGGGHTS® Discrete Element Model Solver
 
 Some of the tutorial cases use a discrete element method (DEM) solver called

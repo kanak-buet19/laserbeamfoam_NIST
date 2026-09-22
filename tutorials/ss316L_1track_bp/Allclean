@@ -1,0 +1,14 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1
+
+if [ -z "$WM_PROJECT" ]; then
+    echo "Source the OpenFOAM-10 bashrc first."
+    exit 1
+fi
+
+. "$WM_PROJECT_DIR/bin/tools/CleanFunctions"
+
+cleanCase
+
+rm -rf 0 VTK VTKs
+rm -f log.* *.out *.err

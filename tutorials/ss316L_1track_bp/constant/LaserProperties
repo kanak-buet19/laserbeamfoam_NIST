@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      LaserProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Beam direction. +y is "into the substrate" after the Allrun rotation.
+// The 5 degree tilt is deliberate: a perfectly vertical ray hitting a
+// perfectly flat surface reflects straight back along itself, which the ray
+// tracer handles poorly. The tilt avoids that.
+V_incident (0.087 0.996 0);
+
+timeVsLaserPosition
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPosition";
+    outOfBounds clamp;
+}
+
+timeVsLaserPower
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPower";
+    outOfBounds clamp;
+}
+
+laserRadius 36e-6;          // 1/e^2 spot radius (72 um diameter)
+
+N_sub_divisions  1;         // rays per cell per direction
+
+wavelength  1.064e-6;       // Nd:YAG / fibre, 1064 nm
+
+// Free-electron number density for the Drude absorption model, 1/m^3.
+// Derived from SS316L itself: n = Z * rho * N_A / M
+//   = 2 * 7430 / 0.0558 * 6.022e23 = 1.60e29,  with Z = 2 free electrons per
+// atom (iron-like). Together with elec_resistivity = 1.25e-6 ohm.m this gives
+// a flat-surface absorptivity of 29% at normal incidence, which matches the
+// measured 30-35% for SS316L at 1064 nm.
+e_num_density  1.60e29;
+
+Radius_Flavour  2.0;
+
+PowderSim false;            // bare plate
+
+// ************************************************************************* //

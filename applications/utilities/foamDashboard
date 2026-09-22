@@ -1,0 +1,362 @@
+#!/bin/bash
+#------------------------------------------------------------------------------
+# foamDashboard
+#
+# Turns the scrolling output of a laserbeamFoam-family solver into a single
+# block on screen that stays put and only updates its numbers.
+#
+# Usage:
+#   laserbeamFoam 2>&1 | foamDashboard                  # live, no log kept
+#   laserbeamFoam 2>&1 | foamDashboard -l log.solver    # live + keep raw log
+#   foamDashboard -f log.laserbeamFoam                  # follow a running log
+#
+# Options:
+#   -l FILE   also write the raw, unmodified output to FILE
+#   -f FILE   read by following FILE (like tail -f) instead of stdin
+#   -F        force dashboard drawing even when stdout is not a terminal
+#   -h        this help
+#
+# Notes:
+#   * If stdout is not a terminal (piped, redirected) the input is passed
+#     straight through unchanged, so this is safe to leave in a script.
+#   * endTime and maxCo are read from system/controlDict when it is present
+#     in the current directory; they drive the progress bar and the Courant
+#     limits shown.
+#   * On a solver crash the dashboard stops and the remaining output,
+#     including the error message, is printed as normal.
+#   * Both output formats are understood: the OpenFOAM-10 solvers in this
+#     repository ("Laser laser0", "Laser power = ", "Total Q deposited this
+#     timestep: ") and the OpenFOAM-v2512 ones ("Laser: laser0", indented
+#     "power = ", "Total Q deposited: ").
+#   * The OpenFOAM-10 solvers do not report a ray count or a PIMPLE outer
+#     iteration number, so those two fields show "--". Everything else is live.
+#------------------------------------------------------------------------------
+
+rawLog=""
+followFile=""
+force=0
+[[ -n $FOAMDASH_FORCE ]] && force=1
+
+while getopts 'l:f:Fh' flag; do
+    case "${flag}" in
+        l) rawLog="$OPTARG" ;;
+        f) followFile="$OPTARG" ;;
+        F) force=1 ;;
+        h) sed -n "3,32p" "$0" | sed 's|^# \?||'; exit 0 ;;
+        *) echo "foamDashboard: unknown option; try -h" >&2; exit 1 ;;
+    esac
+done
+
+# Pass through untouched when nobody is watching a terminal
+if [[ ! -t 1 && $force -eq 0 ]]; then
+    if [[ -n $followFile ]]; then exec tail -n +1 -f "$followFile"; fi
+    exec cat
+fi
+
+# Follow a file instead of stdin
+if [[ -n $followFile ]]; then
+    if [[ ! -f $followFile ]]; then
+        echo "foamDashboard: no such file: $followFile" >&2
+        exit 1
+    fi
+    exec < <(tail -n +1 -f "$followFile")
+fi
+
+# Keep the raw output if asked
+if [[ -n $rawLog ]]; then
+    exec 3>"$rawLog"
+else
+    exec 3>/dev/null
+fi
+
+#------------------------------------------------------------------------------
+# Case settings, used for the progress bar and the Courant limits
+#------------------------------------------------------------------------------
+endTime=""
+maxCo=""
+maxAlphaCo=""
+appName="solver"
+
+if [[ -f system/controlDict ]]; then
+    endTime=$(grep -m1 -E '^[[:space:]]*endTime' system/controlDict \
+              | tr -d ';' | awk '{print $2}')
+    maxCo=$(grep -m1 -E '^[[:space:]]*maxCo' system/controlDict \
+            | tr -d ';' | sed 's|//.*||' | awk '{print $2}')
+    maxAlphaCo=$(grep -m1 -E '^[[:space:]]*maxAlphaCo' system/controlDict \
+                 | tr -d ';' | sed 's|//.*||' | awk '{print $2}')
+fi
+
+#------------------------------------------------------------------------------
+# Live values
+#------------------------------------------------------------------------------
+status="starting"
+simTime=""; deltaT=""; steps=0
+coMean=""; coMax=""; icoMean=""; icoMax=""
+execTime=""; clockTime=""
+alphaName="alpha"; alphaFrac=""; alphaMin=""; alphaMax=""
+laserName=""; laserPower=""; laserPos=""; qDep=""; nRays=""
+nProcs=""
+tRes=""; tIters=""; pRes=""; pIters=""; pSolves=0
+contCum=""; epsMax=""; pimpleIter=""
+errFlag=0
+
+startMs=0; lastMs=0; nPrev=0
+t0Sim=""          # sim time of the first step seen, for an honest rate
+
+now_ms() {
+    local er=${EPOCHREALTIME/,/.}
+    local s=${er%%.*}
+    local u=${er#*.}
+    echo $(( s * 1000 + 10#${u:0:3} ))
+}
+
+render() {
+    awk -v status="$status" -v appName="$appName" \
+        -v simTime="$simTime" -v endTime="$endTime" -v deltaT="$deltaT" \
+        -v steps="$steps" -v wall="$1" -v t0Sim="$t0Sim" \
+        -v coMean="$coMean" -v coMax="$coMax" -v maxCo="$maxCo" \
+        -v icoMean="$icoMean" -v icoMax="$icoMax" -v maxAlphaCo="$maxAlphaCo" \
+        -v execTime="$execTime" -v clockTime="$clockTime" \
+        -v alphaName="$alphaName" -v alphaFrac="$alphaFrac" \
+        -v alphaMin="$alphaMin" -v alphaMax="$alphaMax" \
+        -v laserName="$laserName" -v laserPower="$laserPower" \
+        -v laserPos="$laserPos" -v qDep="$qDep" -v nRays="$nRays" \
+        -v tRes="$tRes" -v tIters="$tIters" \
+        -v pRes="$pRes" -v pIters="$pIters" -v pSolves="$pSolves" \
+        -v contCum="$contCum" -v epsMax="$epsMax" -v pimpleIter="$pimpleIter" \
+        -v nProcs="$nProcs" \
+    'function g(v, w) {
+         if (v == "") return "--"
+         return sprintf("%.*g", (w ? w : 4), v + 0)
+     }
+     function hms(s) {
+         if (s == "" || s < 0 || s > 359999) return "--:--:--"
+         return sprintf("%02d:%02d:%02d", int(s/3600), int((s%3600)/60), int(s%60))
+     }
+     function bar(f,    i, n, s) {
+         n = int(f * 28 + 0.5)
+         if (n < 0) n = 0; if (n > 28) n = 28
+         s = ""
+         for (i = 0; i < 28; i++) s = s (i < n ? "#" : ".")
+         return s
+     }
+     function row(label, body) {
+         return sprintf("  %-11s %s", label, body)
+     }
+     BEGIN {
+         W = 62
+
+         # ---- derived numbers -------------------------------------------
+         frac = ""; eta = -1
+         if (endTime != "" && endTime + 0 > 0 && simTime != "") {
+             frac = (simTime + 0) / (endTime + 0)
+             if (frac < 0) frac = 0; if (frac > 1) frac = 1
+         }
+         # rate measured from the first step seen, so a restart is honest
+         if (wall > 0 && simTime != "" && t0Sim != "") {
+             adv = (simTime + 0) - (t0Sim + 0)
+             if (adv > 0 && endTime != "") {
+                 rate = adv / wall
+                 if (rate > 0) eta = ((endTime + 0) - (simTime + 0)) / rate
+             }
+         }
+         sps = (wall > 0 ? steps / wall : 0)
+
+         # ---- header ----------------------------------------------------
+         head = " " appName (nProcs == "" || nProcs + 0 <= 1 ? "" : " x" nProcs) " "
+         tail = " " status " "
+         pad = W - 2 - length(head) - length(tail)
+         if (pad < 1) pad = 1
+         line = "+-" head
+         for (i = 0; i < pad; i++) line = line "-"
+         line = line tail "-+"
+         print line
+
+         print row("sim time", sprintf("%s s  /  %s s", g(simTime, 8), g(endTime)))
+         if (frac == "")
+             print row("progress", "[" bar(0) "]    --")
+         else
+             print row("progress", sprintf("[%s] %5.1f%%", bar(frac), frac * 100))
+         print row("deltaT", sprintf("%-14s step  %d", g(deltaT) " s", steps))
+         print row("wall time", sprintf("%-14s ETA   %s", hms(wall), hms(eta)))
+         print row("exec/clock", sprintf("%-14s rate  %.2f step/s", \
+                                         g(execTime) "/" g(clockTime) " s", sps))
+         print ""
+         print row("Courant", sprintf("mean %-10s max %-10s limit %s", \
+                                      g(coMean, 3), g(coMax, 3), g(maxCo)))
+         print row("interface", sprintf("mean %-10s max %-10s limit %s", \
+                                        g(icoMean, 3), g(icoMax, 3), g(maxAlphaCo)))
+         print ""
+         print row(substr(alphaName, 1, 11), \
+                   sprintf("frac %-10s min %-10s max %s", \
+                           g(alphaFrac, 5), g(alphaMin, 3), g(alphaMax, 6)))
+         print row("continuity", sprintf("cumulative %s", g(contCum, 3)))
+         print ""
+         print row("laser", sprintf("%-8s power %-8s Q %-8s rays %s", \
+                                    (laserName == "" ? "--" : laserName), \
+                                    g(laserPower) " W", g(qDep, 5), \
+                                    (nRays == "" ? "--" : nRays)))
+         print row("position", (laserPos == "" ? "--" : "(" laserPos ")"))
+         print ""
+         print row("T", sprintf("res %-12s iters %s", g(tRes, 3), \
+                                (tIters == "" ? "--" : tIters)))
+         print row("p_rgh", sprintf("res %-12s iters %-4s solves %s", \
+                                    g(pRes, 3), (pIters == "" ? "--" : pIters), \
+                                    pSolves))
+         print row("melting", sprintf("max residual %s   PIMPLE iter %s", \
+                                      g(epsMax, 3), \
+                                      (pimpleIter == "" ? "--" : pimpleIter)))
+
+         line = "+"
+         for (i = 0; i < W - 2; i++) line = line "-"
+         print line "+"
+     }'
+}
+
+draw() {
+    local wall=$(( ( $(now_ms) - startMs ) / 1000 ))
+    local out n=0 l
+    out=$(render "$wall")
+    (( nPrev > 0 )) && printf '\033[%dA' "$nPrev"
+    while IFS= read -r l; do
+        printf '\033[2K%s\n' "$l"
+        n=$(( n + 1 ))
+    done <<< "$out"
+    nPrev=$n
+}
+
+cleanup() {
+    printf '\033[?25h'          # cursor back on
+}
+trap cleanup EXIT INT TERM
+
+printf '\033[?25l'              # cursor off while we redraw
+startMs=$(now_ms)
+lastMs=0
+
+#------------------------------------------------------------------------------
+# Main loop: read the solver output, pull out the numbers, redraw
+#------------------------------------------------------------------------------
+while IFS= read -r line || [[ -n $line ]]; do
+    printf '%s\n' "$line" >&3
+
+    case "$line" in
+        "Time = "*)
+            simTime=${line#"Time = "}
+            simTime=${simTime%s}            # OF-10 prints "Time = 1.2e-07s"
+            [[ -z $t0Sim ]] && t0Sim=$simTime
+            steps=$(( steps + 1 ))
+            pSolves=0
+            status="running"
+            ;;
+        "deltaT = "*)
+            deltaT=${line#"deltaT = "}
+            ;;
+        "Courant Number mean: "*)
+            read -r _ _ _ coMean _ coMax <<< "$line"
+            ;;
+        "Interface Courant Number mean: "*)
+            read -r _ _ _ _ icoMean _ icoMax <<< "$line"
+            ;;
+        "ExecutionTime = "*)
+            read -r _ _ execTime _ _ _ clockTime _ <<< "$line"
+            ;;
+        "Phase-1 volume fraction = "*)
+            read -r _ _ _ _ alphaFrac aname _ alphaMin _ _ alphaMax <<< "$line"
+            aname=${aname#Min(}; alphaName=${aname%)}
+            ;;
+        "Laser power = "*)                       # OF-10
+            laserPower=${line#"Laser power = "}
+            ;;
+        "Laser mean position = ("*)              # OF-10
+            laserPos=${line#"Laser mean position = ("}
+            laserPos=${laserPos%)}
+            ;;
+        "Laser position including any oscillation = ("*)
+            laserPos=${line#"Laser position including any oscillation = ("}
+            laserPos=${laserPos%)}
+            ;;
+        "Laser: "*)                              # OF-v2512
+            laserName=${line#"Laser: "}
+            ;;
+        "Laser "*)                               # OF-10: "Laser laser0"
+            laserName=${line#"Laser "}
+            ;;
+        "Exec   : "*)
+            appName=${line#"Exec   : "}
+            appName=${appName%% *}
+            ;;
+        "nProcs : "*)
+            nProcs=${line#"nProcs : "}
+            ;;
+        "PIMPLE: iteration "*)
+            pimpleIter=${line#"PIMPLE: iteration "}
+            ;;
+        *"FOAM FATAL"*)
+            errFlag=1
+            status="ERROR"
+            ;;
+        "End")
+            status="done"
+            ;;
+        *)
+            # Indented laser block and the solver residual lines
+            trimmed=${line#"${line%%[![:space:]]*}"}
+            case "$trimmed" in
+                "power = "*)
+                    laserPower=${trimmed#"power = "}
+                    ;;
+                "Total Q deposited this timestep: "*)     # OF-10
+                    qDep=${trimmed#"Total Q deposited this timestep: "}
+                    ;;
+                "Total Q deposited: "*)                   # OF-v2512
+                    qDep=${trimmed#"Total Q deposited: "}
+                    ;;
+                "Total rays: "*)
+                    nRays=${trimmed#"Total rays: "}
+                    nRays=${nRays%%,*}
+                    ;;
+                "mean position = ("*)
+                    laserPos=${trimmed#"mean position = ("}
+                    laserPos=${laserPos%)}
+                    ;;
+                "Correcting epsilon1,"*)
+                    epsMax=${trimmed##*max residual = }
+                    ;;
+                "time step continuity errors"*)
+                    contCum=${trimmed##*cumulative = }
+                    ;;
+                *"Solving for T,"*)
+                    tmp=${trimmed#*Initial residual = }; tRes=${tmp%%,*}
+                    tIters=${trimmed##*No Iterations }
+                    ;;
+                *"Solving for p_rgh,"*)
+                    tmp=${trimmed#*Final residual = }; pRes=${tmp%%,*}
+                    pIters=${trimmed##*No Iterations }
+                    pSolves=$(( pSolves + 1 ))
+                    ;;
+            esac
+            ;;
+    esac
+
+    # A crash is worth more than a tidy screen: bail out and show it raw
+    if (( errFlag )); then
+        draw
+        echo
+        printf '%s\n' "$line"
+        while IFS= read -r line || [[ -n $line ]]; do
+            printf '%s\n' "$line" | tee /dev/fd/3
+        done
+        exit 1
+    fi
+
+    # Redraw at most ~6 times a second
+    thisMs=$(now_ms)
+    if (( thisMs - lastMs >= 160 )); then
+        draw
+        lastMs=$thisMs
+    fi
+done
+
+draw
+exit 0

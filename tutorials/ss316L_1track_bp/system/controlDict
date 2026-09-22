@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     laserbeamFoam;
+
+startFrom       latestTime;
+startTime       0;
+
+stopAt          endTime;
+endTime         4500e-6;      // 4000 us track + 500 us cooling tail
+
+deltaT          1e-7;         // starting step; adjustTimeStep takes over
+
+writeControl    runTime;
+writeInterval   100e-6;       // 45 writes over the run
+
+purgeWrite      0;
+writeFormat     ascii;
+writePrecision  10;
+writeCompression uncompressed;
+
+timeFormat      general;
+timePrecision   10;
+
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+maxCo           0.45;
+maxAlphaCo      0.45;
+maxDeltaT       5e-7;
+
+// ************************************************************************* //

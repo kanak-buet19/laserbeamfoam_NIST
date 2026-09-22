@@ -1,0 +1,89 @@
+#!/bin/bash
+
+## Call as: `./Allrun`            to run in parallel with the live dashboard
+## Call as: `./Allrun serial`     to run on a single core
+## Call as: `./Allrun raw`        to show the plain scrolling solver output
+##
+## The core count comes from numberOfSubdomains in system/decomposeParDict.
+## Run ./Allclean first if the case has already been run.
+
+cd "$(dirname "$0")" || exit 1
+
+bParallel=true
+bDash=true
+for arg in "$@"; do
+    case "$arg" in
+        serial)         bParallel=false ;;
+        parallel)       bParallel=true ;;
+        raw|no-dash)    bDash=false ;;
+        dash|dashboard) bDash=true ;;
+        *) echo "Allrun: ignoring unknown argument '$arg'" ;;
+    esac
+done
+
+# Assumes the OpenFOAM-10 environment is already sourced (inside the
+# openfoam/openfoam10-paraview56 container it is sourced for you).
+if [ -z "$WM_PROJECT" ]; then
+    echo "Source the OpenFOAM-10 bashrc first, e.g."
+    echo "    . /opt/openfoam10/etc/bashrc"
+    exit 1
+fi
+
+. "$WM_PROJECT_DIR/bin/tools/RunFunctions"
+
+export FOAM_SIGFPE=0
+
+# How the solver output is shown. foamDashboard folds it into one block that
+# updates in place; `tee` prints it raw. Either way the full log is written to
+# log.laserbeamFoam.
+caseDir=$PWD
+dashboard="$caseDir/../../applications/utilities/foamDashboard"
+
+if ${bDash}; then
+    if [[ -x $dashboard ]]; then
+        view=("$dashboard" -l log.laserbeamFoam)
+    else
+        echo "Allrun: $dashboard is missing or not executable; showing raw output"
+        view=(tee log.laserbeamFoam)
+    fi
+else
+    view=(tee log.laserbeamFoam)
+fi
+
+# Number of ranks comes from system/decomposeParDict, so the two can't drift.
+NP=$(foamDictionary -entry numberOfSubdomains -value system/decomposeParDict)
+
+echo "Copying 'initial' to 0"
+rm -rf 0
+cp -r initial 0
+
+runApplication blockMesh
+
+# Fills alpha.metal from system/bedPlateDict (and constant/location).
+# Must run BEFORE transformPoints: bedPlateDict is in the unrotated frame.
+runApplication setSolidFraction
+
+# Turn the mesh so the laser travels along +y, as laserHeatSource expects.
+runApplication transformPoints "rotate=((0 1 0) (0 0 1))"
+
+# Report the solver's exit status, not the viewer's
+set -o pipefail
+
+if ${bParallel} && [ "$NP" -gt 1 ]; then
+    runApplication decomposePar
+    echo "Running laserbeamFoam on $NP ranks"
+    mpirun -np "$NP" laserbeamFoam -parallel 2>&1 | "${view[@]}"
+    solverStatus=$?
+    [ $solverStatus -eq 0 ] && runApplication reconstructPar
+else
+    echo "Running laserbeamFoam on a single core"
+    laserbeamFoam 2>&1 | "${view[@]}"
+    solverStatus=$?
+fi
+
+if [ $solverStatus -ne 0 ]; then
+    echo "Allrun: laserbeamFoam exited with status $solverStatus; see log.laserbeamFoam"
+    exit $solverStatus
+fi
+
+runApplication foamToVTK

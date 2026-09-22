@@ -1,0 +1,12 @@
+// Laser power in watts.
+// 200 W held for the whole 4000 us track, then off for a 500 us cooling tail.
+
+(
+    (0              0)
+    (1e-8         200)        // laser on
+
+    (4000e-6      200)        // end of the 800 um track
+    (4000.001e-6    0)        // laser off
+
+    (4500e-6        0)        // cooling / solidification tail
+)

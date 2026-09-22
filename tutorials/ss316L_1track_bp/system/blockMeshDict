@@ -1,0 +1,104 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Mesh is built here in a "z is up" frame, then rotated by Allrun with
+//     transformPoints "rotate=((0 1 0) (0 0 1))"
+// which maps (x,y,z) -> (x,-z,y).  After the rotation the solver sees:
+//     x  = across the track (width)      0     ... 0.4 mm
+//     y  = depth, laser travels +y      -0.7   ... 0    mm
+//     z  = along the track (length)      0     ... 1.0  mm
+//
+// Domain, as built below (before the rotation):
+//     x  width   400 um
+//     y  length 1000 um
+//     z  depth   700 um  =  500 um metal (z 0...0.5mm) + 200 um gas (z 0.5...0.7mm)
+//
+// Cell size 5 um in all three directions -> 80 x 200 x 140 = 2 240 000 cells.
+//
+// This is the BASE mesh. constant/dynamicMeshDict is set up to refine it two
+// levels deep at the free surface and in the laser path, which would take
+// cells down to 5/4 = 1.25 um -- but that refinement is not currently firing,
+// so 5 um here is what the solver actually sees. If the refinement is fixed
+// later, drop maxRefinement or coarsen this back to 20 um, or the cell count
+// will explode.
+
+convertToMeters 1.0;
+
+vertices
+(
+    (0        0        0     )   // 0
+    (0.4e-3   0        0     )   // 1
+    (0.4e-3   1.0e-3   0     )   // 2
+    (0        1.0e-3   0     )   // 3
+    (0        0        0.7e-3)   // 4
+    (0.4e-3   0        0.7e-3)   // 5
+    (0.4e-3   1.0e-3   0.7e-3)   // 6
+    (0        1.0e-3   0.7e-3)   // 7
+);
+
+blocks
+(
+    // 400 um / 80   = 5 um
+    // 1000 um / 200 = 5 um
+    // 700 um / 140  = 5 um
+    hex (0 1 2 3 4 5 6 7) (80 200 140) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    back
+    {
+        type patch;
+        faces ((0 4 7 3));
+    }
+    front
+    {
+        type patch;
+        faces ((1 2 6 5));
+    }
+    leftWall
+    {
+        type patch;
+        faces ((0 1 5 4));
+    }
+    rightWall
+    {
+        type patch;
+        faces ((3 7 6 2));
+    }
+    topWall
+    {
+        // Laser enters through this face (becomes y = -0.7 mm after rotation)
+        type patch;
+        faces ((4 5 6 7));
+    }
+    bottomWall
+    {
+        // Base of the substrate (becomes y = 0 after rotation)
+        type wall;
+        faces ((0 3 2 1));
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      bedPlateDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Read by setSolidFraction, which runs on the UNROTATED mesh.
+// Every cell centre inside this box gets alpha.metal = 1.
+// Bare plate: no powder, so the box is the full 500 um of substrate.
+
+Bed true;
+
+xmin 0.0;
+xmax 0.4e-3;    // full width
+
+ymin 0.0;
+ymax 1.0e-3;    // full length
+
+zmin 0.0;
+zmax 0.5e-3;    // 500 um of metal; the 200 um above it stays gas
+
+// ************************************************************************* //

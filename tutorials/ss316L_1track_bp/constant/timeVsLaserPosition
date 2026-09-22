@@ -1,0 +1,15 @@
+// Laser spot position (x y z) in metres, in the ROTATED frame the solver sees.
+//   x = 0.2 mm            -> centred across the 0.4 mm width
+//   y                     -> IGNORED by laserHeatSource (only x and z are read);
+//                            set inside the gas for readability
+//   z = 0.1 mm -> 0.9 mm  -> 800 um track, centred in the 1.0 mm length
+//
+// 800 um at 200 mm/s = 4000 us.
+// outOfBounds is "clamp", so the spot simply stays at the end of the track
+// after t = 4000 us (the power is zero there anyway).
+
+(
+    // Single track, +z direction
+    (0e-6       (0.2e-3  -0.6e-3  0.1e-3))
+    (4000e-6    (0.2e-3  -0.6e-3  0.9e-3))
+)
