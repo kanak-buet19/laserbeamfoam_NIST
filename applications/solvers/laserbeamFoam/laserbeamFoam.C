@@ -50,7 +50,7 @@ Authors
 #include "pressureReference.H"
 #include "fvModels.H"
 #include "fvConstraints.H"
-#include "CorrectPhi.H"
+#include <CorrectPhi.H>
 #include "fvcSmooth.H"
 #include "Polynomial.H"
 #include "laserHeatSource.H"

@@ -63,6 +63,9 @@ volScalarField T
 
 #include "createPhi.H"
 
+// phi is required by the solver but is not needed in the written results.
+phi.writeOpt() = IOobject::NO_WRITE;
+
 Info<< "Reading phaseProperties\n" << endl;
 immiscibleIncompressibleTwoPhaseMixture mixture(U, phi);
 
@@ -100,7 +103,7 @@ volScalarField p
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     p_rgh + rho*gh
 );
@@ -330,7 +333,7 @@ volScalarField TSolidus
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     alpha1*Tsolidus1 + (1.0 - alpha1)*Tsolidus2
 );
@@ -343,7 +346,7 @@ volScalarField TLiquidus
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     alpha1*Tliquidus1 + (1.0 - alpha1)*Tliquidus2
 );

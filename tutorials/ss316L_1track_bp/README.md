@@ -27,7 +27,9 @@ The solver needs the laser to travel along `+y`.
 | Depth | z, 0 → 700 µm | y, −700 → 0 µm |
 
 - Metal: 500 µm deep. Gas: 200 µm above it.
-- Cells are 10 µm cubes: 40 × 100 × 70 = **280 000 cells**.
+- Cells are nominally 8 µm: 50 × 125 × 88 = **550 000 cells**. The cell
+  depth is 7.955 µm because the 700 µm domain depth is not exactly divisible
+  by 8 µm.
 - The track runs `z = 100 µm → 900 µm` at `x = 200 µm`, so it is centred in
   both length and width.
 
@@ -43,7 +45,7 @@ cd tutorials/ss316L_1track_bp
 ./Allrun
 ```
 
-`Allrun` reads the rank count from `system/decomposeParDict` (currently 8), so
+`Allrun` reads the rank count from `system/decomposeParDict` (currently 14), so
 change it in that one place. It runs `blockMesh`, `setSolidFraction`,
 `transformPoints`, `decomposePar`, the solver, `reconstructPar` and
 `foamToVTK`.

@@ -47,7 +47,7 @@ Authors
 #include "pressureReference.H"
 #include "fvModels.H"
 #include "fvConstraints.H"
-#include "CorrectPhi.H"
+#include <CorrectPhi.H>
 // #include "findLocalCell.H"
 #include "laserHeatSource.H"
 

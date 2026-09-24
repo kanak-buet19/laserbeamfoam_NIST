@@ -59,7 +59,7 @@ laserHeatSource::laserHeatSource
             mesh.time().timeName(),
             mesh,
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh,
         dimensionedScalar("deposition", dimensionSet(1, -1, -3, -0, 0), -1.0)
@@ -113,7 +113,7 @@ laserHeatSource::laserHeatSource
             mesh.time().timeName(),
             mesh,
             IOobject::READ_IF_PRESENT,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh,
         dimensionedScalar("rayQ", dimensionSet(1, 0, -3, 0, 0), scalar(0.0))
@@ -139,7 +139,7 @@ laserHeatSource::laserHeatSource
             mesh.time().timeName(),
             mesh,
             IOobject::READ_IF_PRESENT,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh,
         dimensionedScalar("refineflag", dimensionSet(0,0,0,0,0), 0.0)

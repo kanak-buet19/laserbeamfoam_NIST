@@ -26,14 +26,11 @@ FoamFile
 //     y  length 1000 um
 //     z  depth   700 um  =  500 um metal (z 0...0.5mm) + 200 um gas (z 0.5...0.7mm)
 //
-// Cell size 5 um in all three directions -> 80 x 200 x 140 = 2 240 000 cells.
+// Nominal cell size 8 um -> 50 x 125 x 88 = 550 000 cells.
+// The 700 um depth is not exactly divisible by 8 um, so its cell size is
+// 700/88 = 7.955 um; the width and length cell sizes are exactly 8 um.
 //
-// This is the BASE mesh. constant/dynamicMeshDict is set up to refine it two
-// levels deep at the free surface and in the laser path, which would take
-// cells down to 5/4 = 1.25 um -- but that refinement is not currently firing,
-// so 5 um here is what the solver actually sees. If the refinement is fixed
-// later, drop maxRefinement or coarsen this back to 20 um, or the cell count
-// will explode.
+// This is a fixed mesh; dynamic refinement is disabled for this case.
 
 convertToMeters 1.0;
 
@@ -51,10 +48,10 @@ vertices
 
 blocks
 (
-    // 400 um / 80   = 5 um
-    // 1000 um / 200 = 5 um
-    // 700 um / 140  = 5 um
-    hex (0 1 2 3 4 5 6 7) (80 200 140) simpleGrading (1 1 1)
+    // 400 um / 50   = 8 um
+    // 1000 um / 125 = 8 um
+    // 700 um / 88   = 7.955 um
+    hex (0 1 2 3 4 5 6 7) (50 125 88) simpleGrading (1 1 1)
 );
 
 edges

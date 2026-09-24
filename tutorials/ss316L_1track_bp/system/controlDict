@@ -25,7 +25,7 @@ endTime         4500e-6;      // 4000 us track + 500 us cooling tail
 deltaT          1e-7;         // starting step; adjustTimeStep takes over
 
 writeControl    runTime;
-writeInterval   100e-6;       // 45 writes over the run
+writeInterval   10e-6;        // 450 writes over the run
 
 purgeWrite      0;
 writeFormat     ascii;

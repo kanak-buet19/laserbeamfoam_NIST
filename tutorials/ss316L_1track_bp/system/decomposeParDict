@@ -14,9 +14,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// 280 000 cells. 8 ranks -> 35 000 cells each, which suits this workstation
-// (16 cores). Raise this for a cluster run; Allrun reads the number from here.
-numberOfSubdomains 8;
+// 550 000 cells. 14 ranks -> approximately 39 286 cells per rank.
+// Allrun reads the number of ranks from here.
+numberOfSubdomains 14;
 
 method          scotch;
 
